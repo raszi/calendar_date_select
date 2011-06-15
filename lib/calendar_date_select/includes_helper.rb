@@ -36,7 +36,28 @@ module CalendarDateSelect::IncludesHelper
     options.assert_valid_keys(:style, :locale)
     options[:style] ||= args.shift
     
-    javascript_include_tag(*calendar_date_select_javascripts(:locale => options[:locale])) + "\n" +
-    stylesheet_link_tag(*calendar_date_select_stylesheets(:style => options[:style])) + "\n"
+    includes = [
+      javascript_include_tag(*calendar_date_select_javascripts(:locale => options[:locale])),
+      stylesheet_link_tag(*calendar_date_select_stylesheets(:style => options[:style]))
+    ]
+    includes << calendar_date_default_translation unless options[:locale]
+    includes
   end
+
+  # from one of the comments of http://code.google.com/p/calendardateselect/wiki/HowToLocalize
+  def calendar_date_default_translation
+    scope = [ :calendar_date_select ]
+
+    update_page_tag do |page|
+      page.assign '_translations', {
+        'OK'    => I18n.t(:ok, :scope => scope),
+        'Now'   => I18n.t(:now, :scope => scope),
+        'Today' => I18n.t(:today, :scope => scope),
+        'Clear' => I18n.t(:clear, :scope => scope)
+      }
+      page.assign 'Date.weekdays', I18n.translate('date.abbr_day_names')
+      page.assign 'Date.months', I18n.translate('date.month_names')[1..-1]
+    end
+  end
+
 end
