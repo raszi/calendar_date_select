@@ -9,7 +9,7 @@ module CalendarDateSelect::IncludesHelper
 
   # returns the selected calendar_date_select stylesheet (not an array)
   def calendar_date_select_stylesheets(options = {})
-    return "" if @cds_stylesheets_loaded
+    return [] if @cds_stylesheets_loaded
 
     @cds_stylesheets_loaded = true
 
